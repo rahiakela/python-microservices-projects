@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: market-data
-          image: <docker id>/market-data:latest      # Contains a single container, pulled from your Docker registry
+          image: rahiakela/market-data:1.0.0      # Contains a single container, pulled from your Docker registry
           ports:
             - containerPort: 8000
           livenessProbe:     # Configures a liveness probe to query /ping on port 8000
