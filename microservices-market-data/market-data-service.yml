@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: service
+metadata:
+  name: market-data
+spec:
+  type: NodePort
+  selector:             # Defines which pods this service will access
+    app: market-data
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 8000        # The service will route to this port on the specified pods
+      nodePort: 30623   # The service will be exposed as a specified port on the cluster.Excluding this line will assign a random port in range 30000-32767.

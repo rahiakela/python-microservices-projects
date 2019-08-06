@@ -1,0 +1,40 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment                  # Defines a Kubernetes deployment object
+metadata:
+  name: market-data
+spec:
+  replicas: 3                     # The desired number of pods to deploy
+  strategy:                       # The strategy field describes how Kubernetes will execute the deployment of new pods.
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 50%
+  template:                       # The template to use for creating each pod
+    metadata:
+      labels:
+        app: market-data
+        tier: backend
+        track: stable
+      spec:
+        containers:
+          - name: market-data
+            image: morganjbruce/market-data:v2
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100mi
+            ports:
+              - containerPort: 8000
+            livenessProbe:
+              httpGet:
+                path: /ping
+                port: 8000
+              initialDelaySeconds: 10
+              timeoutSeconds: 15
+            readinessProbe:
+              httpGet:
+                path: /ping
+                port: 8000
+              initialDelaySeconds: 10
+              timeoutSeconds: 15

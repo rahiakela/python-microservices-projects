@@ -1,0 +1,30 @@
+---
+kind: ReplicaSet   # Defines a set of pods
+apiVersion: extensions/v1beta1
+metadata:
+  name: market-data
+spec:
+  replicas: 3      # Should contain three replicas of your market-data pod
+  template:        # Creates each pod using this template
+    metadata:
+      labels:      # Identifies pods within Kubernetes by label
+        app: market-data
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: market-data
+          image: <docker id>/market-data:latest      # Contains a single container, pulled from your Docker registry
+          ports:
+            - containerPort: 8000
+          livenessProbe:     # Configures a liveness probe to query /ping on port 8000
+            httpGet:
+              path: /ping
+              port: 8000
+            initialDelaySeconds: 10
+            timeoutSeconds: 15
+          readinessProbe:    # Configures a readiness probe to query /ping on port 8000
+              path: /ping
+              port: 8000
+            initialDelaySeconds: 10
+            timeoutSeconds: 15

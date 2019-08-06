@@ -1,0 +1,35 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment                  # Defines a Kubernetes deployment object
+metadata:
+  name: market-data-canary
+spec:
+  replicas: 1                     # You want to create one canary.
+  template:                       # The template to use for creating each pod
+    metadata:
+      labels:                     # The canary deployment has a distinct set of labels.
+        app: market-data
+        tier: backend
+        track: canary
+      spec:
+        containers:
+          - name: market-data
+            image: <docker id>/market-data:v2
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100mi
+            ports:
+              - containerPort: 8000
+            livenessProbe:
+              httpGet:
+                path: /ping
+                port: 8000
+              initialDelaySeconds: 10
+              timeoutSeconds: 15
+            readinessProbe:
+              httpGet:
+                path: /ping
+                port: 8000
+              initialDelaySeconds: 10
+              timeoutSeconds: 15
